@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.*?>
+<?import java.lang.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainController">
+    <children>
+        <VBox layoutX="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+            <TabPane maxHeight="-Infinity" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="120.0" VBox.vgrow="ALWAYS">
+              <tabs>
+                <Tab text="Preprocessing">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <HBox VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="120.0">
+                                                   <children>
+                                                      <Button maxWidth="85.0" minWidth="100.0" mnemonicParsing="false" onAction="#openFile" prefWidth="100.0" text="Open File">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets />
+                                                   </HBox.margin>
+                                                </VBox>
+                                                <VBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <ScatterChart VBox.vgrow="ALWAYS">
+                                                        <xAxis>
+                                                          <CategoryAxis side="BOTTOM" />
+                                                        </xAxis>
+                                                        <yAxis>
+                                                          <NumberAxis side="LEFT" />
+                                                        </yAxis>
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </ScatterChart>
+                                                      <LineChart VBox.vgrow="ALWAYS">
+                                                        <xAxis>
+                                                          <CategoryAxis side="BOTTOM" />
+                                                        </xAxis>
+                                                        <yAxis>
+                                                          <NumberAxis side="LEFT" />
+                                                        </yAxis>
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </LineChart>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets />
+                                                   </HBox.margin>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </AnchorPane>
+                     </content>
+                </Tab>
+                <Tab text="Features Section">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="120.0">
+                                                   <children>
+                                                      <Button maxWidth="85.0" minWidth="100.0" mnemonicParsing="false" onAction="#openFile" prefWidth="100.0" text="Open File">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                      <Button maxWidth="85.0" minWidth="100.0" mnemonicParsing="false" onAction="#saveFile" prefWidth="100.0" text="Save File">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="120.0">
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Feature number:" textAlignment="RIGHT">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                   </children>
+                                                </VBox>
+                                                <VBox prefWidth="120.0">
+                                                   <children>
+                                                      <ChoiceBox maxWidth="85.0" minWidth="100.0" prefWidth="100.0">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </ChoiceBox>
+                                                      <RadioButton mnemonicParsing="false" selected="true" text="Fisher">
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </padding>
+                                                         <toggleGroup>
+                                                            <ToggleGroup fx:id="toggleGroup" />
+                                                         </toggleGroup>
+                                                      </RadioButton>
+                                                      <RadioButton mnemonicParsing="false" text="SFS" toggleGroup="$toggleGroup">
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </padding>
+                                                      </RadioButton>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="120.0">
+                                                   <children>
+                                                      <Button maxWidth="85.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" text="Train">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <TextArea maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextArea>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </AnchorPane>
+                     </content>
+                </Tab>
+                  <Tab text="Classifier">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="140.0">
+                                                   <children>
+                                                      <Button maxWidth="120.0" minWidth="100.0" mnemonicParsing="false" onAction="#openFile" prefWidth="120.0" text="Open File">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                      <Button maxWidth="120.0" minWidth="100.0" mnemonicParsing="false" onAction="#saveFile" prefWidth="120.0" text="Save File">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="90.0">
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Classifiers:" textAlignment="RIGHT">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="k:" textAlignment="RIGHT">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="140.0">
+                                                   <children>
+                                                      <ChoiceBox fx:id="classifierChoiceBox" maxWidth="120.0" minWidth="100.0" prefWidth="120.0" value="NN">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                         <items>
+                                                            <FXCollections fx:factory="observableArrayList">
+                                                               <String fx:value="NN" />
+                                                               <String fx:value="k-NN" />
+                                                               <String fx:value="NM" />
+                                                               <String fx:value="k-NM" />
+                                                            </FXCollections>
+                                                         </items>
+                                                      </ChoiceBox>
+                                                      <ChoiceBox maxWidth="120.0" minWidth="100.0" prefWidth="120.0">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </ChoiceBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="140.0">
+                                                   <children>
+                                                      <Button maxWidth="120.0" minWidth="100.0" mnemonicParsing="false" onAction="#trainEvent" prefWidth="120.0" text="Train">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Training part (%):">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_RIGHT" prefWidth="140.0">
+                                                   <children>
+                                                      <Button maxWidth="120.0" minWidth="100.0" mnemonicParsing="false" onAction="#executeEvent" prefWidth="120.0" text="Execute">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                      <TextField fx:id="trainingPartTextField" maxWidth="120.0" minWidth="100.0" prefWidth="120.0" text="80">
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <TextArea fx:id="textArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextArea>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+              </tabs>
+               <padding>
+                  <Insets bottom="25.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </TabPane>
+                <HBox alignment="BOTTOM_LEFT" fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" scaleShape="false" VBox.vgrow="NEVER">
+                    <children>
+                        <ProgressIndicator fx:id="progressIndicator" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="25.0" visible="false">
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0" />
+                            </HBox.margin>
+                        </ProgressIndicator>
+                        <Text fx:id="informationTextField" strokeType="OUTSIDE" strokeWidth="0.0" text="..." visible="false">
+                            <HBox.margin>
+                                <Insets bottom="2.0" left="10.0" top="2.0" />
+                            </HBox.margin>
+                        </Text>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
