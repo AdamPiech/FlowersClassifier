@@ -44,7 +44,7 @@ public class NNClassifier implements IClassifier {
         for (int index = 0; index < object.getFeaturesNumber(); index++ ) {
             sum += countDistance(object, target, index);
         }
-        return sum / ((double) object.getFeaturesNumber());
+        return sqrt(sum);
     }
 
     private Double getMinValue(Map<Double, String> distanceResults) {
