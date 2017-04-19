@@ -1,7 +1,6 @@
 package utils;
 
-import utils.Classifiers.IClassifier;
-import utils.Classifiers.NNClassifier;
+import utils.Classifiers.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +14,9 @@ public class ClassifierTypes {
 
     public ClassifierTypes() {
         classifiers.put("NN", new NNClassifier());
-        classifiers.put("k-NN", null);
-        classifiers.put("NM", null);
-        classifiers.put("k-NM", null);
+        classifiers.put("k-NN", new kNNClassifier());
+        classifiers.put("NM", new NMClassifier());
+        classifiers.put("k-NM", new kNMClassifier());
     }
 
     public IClassifier getClassifier(String key) {
