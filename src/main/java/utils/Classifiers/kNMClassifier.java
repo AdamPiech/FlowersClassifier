@@ -10,8 +10,19 @@ import java.util.List;
 
 public class kNMClassifier implements IClassifier {
 
+    private int numberOfSamples = 2;
+
     @Override
     public double execute(List<Object> trainingSet, List<Object> testingSet) {
         return 0;
     }
+
+    public int getNumberOfSamples() {
+        return numberOfSamples;
+    }
+
+    public void setNumberOfSamples(int numberOfSamples) {
+        this.numberOfSamples = numberOfSamples;
+    }
+
 }

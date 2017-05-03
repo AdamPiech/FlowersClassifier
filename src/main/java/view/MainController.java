@@ -2,7 +2,11 @@ package view;
 
 import engine.FileDataBase;
 import engine.Object;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -12,16 +16,19 @@ import utils.ClassifierTypes;
 import utils.Classifiers.IClassifier;
 import utils.Classifiers.kNMClassifier;
 import utils.Classifiers.kNNClassifier;
+import utils.NoSampleTypes;
 import utils.Training;
 
 import java.io.File;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by Adam Piech on 2017-03-22.
  */
-public class MainController {
+public class MainController implements Initializable {
 
     @FXML private AnchorPane anchorPane;
     @FXML private TextField trainingPartTextField;
@@ -32,6 +39,18 @@ public class MainController {
     private FileDataBase fileDataBase;
     private List<Object> trainingObjects;
     private List<Object> testingObjects;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        NoSampleTypes noSampleTypes = new NoSampleTypes();
+        classifierChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, java.lang.Object oldValue, java.lang.Object newValue) {
+                noSamplesChoiceBox.setItems(noSampleTypes.getChoiceBoxItems((String) newValue));
+                noSamplesChoiceBox.setValue(noSampleTypes.getChoiceBoxValue((String) newValue));
+            }
+        });
+    }
 
     @FXML
     private void trainEvent() {
@@ -56,7 +75,7 @@ public class MainController {
             ((kNNClassifier) classifier).setNumberOfSamples(Integer.valueOf((String) noSamplesChoiceBox.getValue()));
         }
         if (classifier instanceof kNMClassifier) {
-//            ((kNMClassifier) classifier).setNumberOfSamples(Integer.valueOf((String) noSamplesChoiceBox.getValue()));
+            ((kNMClassifier) classifier).setNumberOfSamples(Integer.valueOf((String) noSamplesChoiceBox.getValue()));
         }
         return classifier;
     }
