@@ -5,6 +5,7 @@ import engine.Object;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -16,18 +17,26 @@ import utils.ClassifierTypes;
 import utils.Classifiers.IClassifier;
 import utils.Classifiers.kNMClassifier;
 import utils.Classifiers.kNNClassifier;
+import utils.Fisher;
 import utils.NoSampleTypes;
 import utils.Training;
 
 import java.io.File;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static utils.Constants.RESOURCE_DIRECTORY;
 
 /**
  * Created by Adam Piech on 2017-03-22.
  */
+
 public class MainController implements Initializable {
 
     @FXML private AnchorPane anchorPane;
@@ -35,10 +44,13 @@ public class MainController implements Initializable {
     @FXML private TextArea textArea;
     @FXML private ChoiceBox classifierChoiceBox;
     @FXML private ChoiceBox noSamplesChoiceBox;
+    @FXML private ChoiceBox noFeaturesChoiceBox;
 
     private FileDataBase fileDataBase;
     private List<Object> trainingObjects;
     private List<Object> testingObjects;
+
+    private String filePath;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,6 +66,11 @@ public class MainController implements Initializable {
 
     @FXML
     private void trainEvent() {
+        //(Fisher) Za każdym razem trzeba ładować na nowo z pliku - poprawić!!!
+        fileDataBase.load(filePath);
+        Fisher fisher = new Fisher(fileDataBase.getObjects(), Integer.parseInt(noFeaturesChoiceBox.getValue().toString()));
+        fisher.execute();
+
         int trainingPart = (int) Double.parseDouble(trainingPartTextField.getText());
         Training training = new Training(fileDataBase);
         training.train(trainingPart);
@@ -90,7 +107,8 @@ public class MainController implements Initializable {
         }
 
         FileDataBase fileDataBase = new FileDataBase();
-        fileDataBase.load(file.getAbsolutePath());
+        fileDataBase.load(filePath = file.getAbsolutePath());
+        prepareFeaturesChoiceBox(fileDataBase.getNoFeatures());
         return this.fileDataBase = fileDataBase;
     }
 
@@ -103,6 +121,7 @@ public class MainController implements Initializable {
     private FileChooser createFileChooser(String windowName) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(windowName);
+        fileChooser.setInitialDirectory(new File(RESOURCE_DIRECTORY));
         fileChooser.getExtensionFilters()
                 .add(new FileChooser.ExtensionFilter("*.txt", "*.txt"));
         return fileChooser;
@@ -112,6 +131,16 @@ public class MainController implements Initializable {
         DecimalFormat df = new DecimalFormat("#.00");
         textArea.setText("Poprawnie sklasyfikowano " + df.format(percentOfProperlyClassified) + "% obieków.\n"
                 + "Błędnie sklasyfikowano " + df.format(percentOfMisclassified) + "% obieków.\n");
+    }
+
+    private void prepareFeaturesChoiceBox(int noFeatures) {
+        List<Integer> features = IntStream
+                .range(1, noFeatures + 1)
+                .mapToObj(i -> i)
+                .collect(Collectors.toList());
+
+        noFeaturesChoiceBox.setItems(FXCollections.observableArrayList(features));
+        noFeaturesChoiceBox.setValue(noFeatures);
     }
 
 }

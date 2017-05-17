@@ -37,6 +37,13 @@ public class NMClassifier implements IClassifier {
     }
 
     private List<Object> countMeanSample(List<Object> trainingSet) {
+
+//        trainingSet
+//                .stream()
+//                .collect(Collectors.groupingBy(Object::getClassName));
+
+
+
         //TODO
 //        Supplier<Stream<Object>> xxx = () -> trainingSet.stream();
 //        xxx

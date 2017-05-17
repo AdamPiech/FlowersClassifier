@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 /**
  * Created by Adam Piech on 2017-04-05.
  */
+
 public class Training {
 
     private FileDataBase fileDataBase;

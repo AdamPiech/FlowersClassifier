@@ -2,6 +2,7 @@ package utils;
 
 import javafx.collections.ObservableList;
 
+import static java.io.File.*;
 import static javafx.collections.FXCollections.*;
 
 /**
@@ -10,19 +11,21 @@ import static javafx.collections.FXCollections.*;
 
 public class Constants {
 
-    public static String NN = "NN";
-    public static String kNN = "k-NN";
-    public static String NM = "NM";
-    public static String kNM = "k-NM";
+    public final static String RESOURCE_DIRECTORY = "src" + separator + "main" + separator + "resources";
 
-    public static ObservableList<String> NN_CHOICEBOX_ITEMS = observableArrayList("1");
-    public static ObservableList<String> kNN_CHOICEBOX_ITEMS = observableArrayList("1", "3", "5", "7", "9");
-    public static ObservableList<String> NM_CHOICEBOX_ITEMS = observableArrayList("1");
-    public static ObservableList<String> kNM_CHOICEBOX_ITEMS = observableArrayList("1", "2", "3", "4", "5");
+    public final static String NN = "NN";
+    public final static String kNN = "k-NN";
+    public final static String NM = "NM";
+    public final static String kNM = "k-NM";
 
-    public static String NN_CHOICEBOX_VALUE = "1";
-    public static String kNN_CHOICEBOX_VALUE = "3";
-    public static String NM_CHOICEBOX_VALUE = "1";
-    public static String kNM_CHOICEBOX_VALUE = "2";
+    public final static ObservableList<String> NN_CHOICEBOX_ITEMS = observableArrayList("1");
+    public final static ObservableList<String> kNN_CHOICEBOX_ITEMS = observableArrayList("1", "3", "5", "7", "9");
+    public final static ObservableList<String> NM_CHOICEBOX_ITEMS = observableArrayList("1");
+    public final static ObservableList<String> kNM_CHOICEBOX_ITEMS = observableArrayList("1", "2", "3", "4", "5");
+
+    public final static String NN_CHOICEBOX_VALUE = "1";
+    public final static String kNN_CHOICEBOX_VALUE = "3";
+    public final static String NM_CHOICEBOX_VALUE = "1";
+    public final static String kNM_CHOICEBOX_VALUE = "2";
 
 }

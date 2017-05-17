@@ -10,6 +10,7 @@ public class Object {
 
     private int classID = -1;
     private String className;
+
     private List<Float> feature;
 
     public Object(String className, List<Float> feature) {
@@ -27,6 +28,10 @@ public class Object {
 
     public List<Float> getFeature() {
         return feature;
+    }
+
+    public void setFeature(List<Float> feature) {
+        this.feature = feature;
     }
 
 }
