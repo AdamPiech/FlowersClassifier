@@ -5,6 +5,7 @@ import engine.Object;
 import java.util.*;
 
 import static java.lang.Math.pow;
+import static java.lang.Math.scalb;
 import static java.lang.Math.sqrt;
 
 /**
@@ -38,10 +39,20 @@ public class kNMClassifier implements IClassifier {
     public Map<String, List<Float>> prepareSubclasses(List<Object> trainingSet) {
 
         Map<String, List<Object>> separatedClasses = separateClass(trainingSet);
-        Map<String, List<Object>> separatedSubclasses = randomSeparateSubclass(separatedClasses);
+        Map<String, List<Float>> finalSubclasses = new HashMap<>();
+
+        for (String classname : separatedClasses.keySet()) {
+            finalSubclasses.putAll(prepareSubclassesForSingleClass(separatedClasses.get(classname), classname));
+        }
+
+        return finalSubclasses;
+    }
+
+    public Map<String, List<Float>> prepareSubclassesForSingleClass(List<Object> classes, String className) {
+
+        Map<String, List<Object>> separatedSubclasses = randomSeparateSubclass(classes, className);
         Map<String, List<Float>> subclassesMeans = countSubclassesMeans(separatedSubclasses);
 
-        int count = 0;
         boolean classesHaveBeenChanged = true;
         while (classesHaveBeenChanged) {
             classesHaveBeenChanged = false;
@@ -65,10 +76,7 @@ public class kNMClassifier implements IClassifier {
 
             separatedSubclasses = newSeparatedSubclasses;
             subclassesMeans = countSubclassesMeans(separatedSubclasses);
-
-            System.out.println("Ilość iteracji wynosi: " + ++count);
         }
-
         return subclassesMeans;
     }
 
@@ -83,15 +91,13 @@ public class kNMClassifier implements IClassifier {
         return classes;
     }
 
-    private Map<String, List<Object>> randomSeparateSubclass(Map<String, List<Object>> classes) {
+    private Map<String, List<Object>> randomSeparateSubclass(List<Object> classes, String className) {
         Map<String, List<Object>> subclasses = new HashMap<>();
-        for (String className : classes.keySet()) {
-            for (int noSubclass = 0; noSubclass < numberOfSamples; noSubclass++) {
-                subclasses.put(className + NAME_SEPARATOR + noSubclass, new ArrayList<>());
-            }
-            for (Object object : classes.get(className)) {
-                subclasses.get(className + NAME_SEPARATOR + new Random().nextInt(numberOfSamples)).add(object);
-            }
+        for (int noSubclass = 0; noSubclass < numberOfSamples; noSubclass++) {
+            subclasses.put(className + NAME_SEPARATOR + noSubclass, new ArrayList<>());
+        }
+        for (Object object : classes) {
+            subclasses.get(className + NAME_SEPARATOR + new Random().nextInt(numberOfSamples)).add(object);
         }
         return subclasses;
     }
@@ -99,8 +105,10 @@ public class kNMClassifier implements IClassifier {
     private Map<String, List<Float>> countSubclassesMeans(Map<String, List<Object>> subclasses) {
         Map<String, List<Float>> subclassesMeans = new HashMap<>();
         for (String subclassName : subclasses.keySet()) {
-            for (int noSubclass = 0; noSubclass < numberOfSamples; noSubclass++) {
-                subclassesMeans.put(subclassName, countNewFeatures(subclasses.get(subclassName)));
+            if (subclasses.get(subclassName).size() > 0) {
+                for (int noSubclass = 0; noSubclass < numberOfSamples; noSubclass++) {
+                    subclassesMeans.put(subclassName, countNewFeatures(subclasses.get(subclassName)));
+                }
             }
         }
         return subclassesMeans;
@@ -121,26 +129,6 @@ public class kNMClassifier implements IClassifier {
         }
         return feature / (float) objects.size();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private String classify(Map<String, List<Float>> trainingSet, Object testingObject) {
         return classifyInSubclass(trainingSet, testingObject).split(NAME_SEPARATOR)[0];
