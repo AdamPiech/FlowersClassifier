@@ -48,7 +48,7 @@ public class kNNClassifier implements IClassifier {
     private double countEuclideanDistance(Object object, Object target) {
         double sum = 0.0;
         for (int index = 0; index < object.getFeaturesNumber(); index++ ) {
-            sum += countDistance(object, target, index);
+            sum += countDistance(object.getFeatures().get(index), target.getFeatures().get(index));
         }
         return sqrt(sum);
     }
@@ -80,12 +80,8 @@ public class kNNClassifier implements IClassifier {
                 .getKey();
     }
 
-    private double countDistance(Object object, Object target, int noFeatures) {
-        return pow(object.getFeature().get(noFeatures) - target.getFeature().get(noFeatures), 2);
-    }
-
-    public int getNumberOfSamples() {
-        return numberOfSamples;
+    private double countDistance(float object, float target) {
+        return pow(object - target, 2);
     }
 
     public void setNumberOfSamples(int numberOfSamples) {

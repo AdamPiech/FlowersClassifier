@@ -1,6 +1,5 @@
 package utils;
 
-import com.sun.org.apache.xalan.internal.utils.FeatureManager;
 import engine.Object;
 import org.la4j.Matrix;
 import org.la4j.matrix.dense.Basic2DMatrix;
@@ -68,7 +67,7 @@ public class Fisher {
 
         for (int row = 0; row < noClass; row++) {
             for (int col = 0; col < noFeatures; col++) {
-                classFeatures.set(row, col, singleClass.get(row).getFeature().get(col));
+                classFeatures.set(row, col, singleClass.get(row).getFeatures().get(col));
             }
         }
 
@@ -79,7 +78,7 @@ public class Fisher {
         for (Object object : objectsSet) {
             List<Float> newFeatures = new ArrayList<>();
             for (Integer featureNumber : bestFeatures.keySet()) {
-                newFeatures.add(object.getFeature().get(featureNumber));
+                newFeatures.add(object.getFeatures().get(featureNumber));
             }
             object.setFeature(newFeatures);
         }
@@ -111,7 +110,7 @@ public class Fisher {
         for (int index = 0; index < noFeature; index++) {
             float sum = (float) 0;
             for (Object object : singleClass) {
-                sum += object.getFeature().get(index);
+                sum += object.getFeatures().get(index);
             }
             means.add(sum / (float) noFeature);
         }

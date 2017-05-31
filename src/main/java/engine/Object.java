@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Object {
 
-    private int classID = -1;
+    public int classID = -1;
     private String className;
 
     private List<Float> feature;
@@ -26,7 +26,7 @@ public class Object {
         return feature.size();
     }
 
-    public List<Float> getFeature() {
+    public List<Float> getFeatures() {
         return feature;
     }
 

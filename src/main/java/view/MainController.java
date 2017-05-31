@@ -5,7 +5,6 @@ import engine.Object;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -24,8 +23,6 @@ import utils.Training;
 import java.io.File;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -84,7 +81,8 @@ public class MainController implements Initializable {
         IClassifier classifier = setClassifierProperties(classifierTypes.getClassifier((String) classifierChoiceBox.getValue()));
         double percentOfProperlyClassified = classifier.execute(trainingObjects, testingObjects) * 100.0;
         double percentOfMisclassified = 100.0 - percentOfProperlyClassified;
-        showResult(percentOfProperlyClassified, percentOfMisclassified);
+        showResultOfClassification(classifierChoiceBox.getValue() + ":   k = " + noSamplesChoiceBox.getValue(),
+                percentOfProperlyClassified, percentOfMisclassified);
     }
 
     private IClassifier setClassifierProperties(IClassifier classifier) {
@@ -127,10 +125,11 @@ public class MainController implements Initializable {
         return fileChooser;
     }
 
-    private void showResult(double percentOfProperlyClassified, double percentOfMisclassified) {
+    private void showResultOfClassification(String instanceName, double percentOfProperlyClassified, double percentOfMisclassified) {
         DecimalFormat df = new DecimalFormat("#.00");
-        textArea.setText("Poprawnie sklasyfikowano " + df.format(percentOfProperlyClassified) + "% obieków.\n"
-                + "Błędnie sklasyfikowano " + df.format(percentOfMisclassified) + "% obieków.\n");
+        textArea.setText(textArea.getText() + instanceName + ".\n"
+                + "Poprawnie sklasyfikowano " + df.format(percentOfProperlyClassified) + "% obiektów.\n"
+                + "Błędnie sklasyfikowano " + df.format(percentOfMisclassified) + "% obiektów.\n\n");
     }
 
     private void prepareFeaturesChoiceBox(int noFeatures) {

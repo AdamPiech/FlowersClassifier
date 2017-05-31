@@ -21,7 +21,7 @@ public class Constants {
     public final static ObservableList<String> NN_CHOICEBOX_ITEMS = observableArrayList("1");
     public final static ObservableList<String> kNN_CHOICEBOX_ITEMS = observableArrayList("1", "3", "5", "7", "9");
     public final static ObservableList<String> NM_CHOICEBOX_ITEMS = observableArrayList("1");
-    public final static ObservableList<String> kNM_CHOICEBOX_ITEMS = observableArrayList("1", "2", "3", "4", "5");
+    public final static ObservableList<String> kNM_CHOICEBOX_ITEMS = observableArrayList("1", "2", "3", "4", "5", "6", "7", "8", "9");
 
     public final static String NN_CHOICEBOX_VALUE = "1";
     public final static String kNN_CHOICEBOX_VALUE = "3";

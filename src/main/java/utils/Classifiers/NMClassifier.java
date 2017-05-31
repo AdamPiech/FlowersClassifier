@@ -1,17 +1,12 @@
 package utils.Classifiers;
 
-import com.sun.javafx.collections.MappingChange;
 import engine.Object;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * Created by Adam Piech on 2017-04-17.
@@ -25,8 +20,8 @@ public class NMClassifier implements IClassifier {
         int properlyClassified = 0;
         int misclassified = 0;
 
-        for (Object testingObject : countMeanSample(testingSet)) {
-            if (classify(trainingSet, testingObject).equals(testingObject.getClassName())) {
+        for (Object testingObject : testingSet) {
+            if (classify(countClassesMeans(trainingSet), testingObject).equals(testingObject.getClassName())) {
                 properlyClassified++;
             } else {
                 misclassified++;
@@ -36,23 +31,33 @@ public class NMClassifier implements IClassifier {
         return ((double) properlyClassified) / ((double) (properlyClassified + misclassified));
     }
 
-    private List<Object> countMeanSample(List<Object> trainingSet) {
+    private List<Object> countClassesMeans(List<Object> trainingSet) {
+        Map<String, List<Object>> classes = trainingSet
+                .stream()
+                .collect(groupingBy(Object::getClassName));
 
-//        trainingSet
-//                .stream()
-//                .collect(Collectors.groupingBy(Object::getClassName));
+        List<Object> classesMeans = new ArrayList<>();
+        for (String key : classes.keySet()) {
+            List<Float> featuresMeans = countNewFeatures(classes.get(key));
+            classesMeans.add(new Object(key, featuresMeans));
+        }
+        return classesMeans;
+    }
 
+    private List<Float> countNewFeatures(List<Object> objects) {
+        List<Float> featuresMeans = new ArrayList<>();
+        for (int featureIndex = 0; featureIndex < objects.get(0).getFeaturesNumber(); featureIndex++) {
+            featuresMeans.add(countFeatureMean(objects, featureIndex));
+        }
+        return featuresMeans;
+    }
 
-
-        //TODO
-//        Supplier<Stream<Object>> xxx = () -> trainingSet.stream();
-//        xxx
-//                .get()
-//                .collect(Collectors.groupingBy(w -> w.getClassName(), Collectors.counting()))
-//                .entrySet()
-//                .stream();
-
-        return null;
+    private float countFeatureMean(List<Object> objects, int featureIndex) {
+        float feature = 0;
+        for (Object object : objects) {
+            feature += object.getFeatures().get(featureIndex);
+        }
+        return feature / (float) objects.size();
     }
 
     private String classify(List<Object> trainingSet, Object testingObject) {
@@ -66,7 +71,7 @@ public class NMClassifier implements IClassifier {
     private double countEuclideanDistance(Object object, Object target) {
         double sum = 0.0;
         for (int index = 0; index < object.getFeaturesNumber(); index++ ) {
-            sum += countDistance(object, target, index);
+            sum += countDistance(object.getFeatures().get(index), target.getFeatures().get(index));
         }
         return sqrt(sum);
     }
@@ -79,8 +84,8 @@ public class NMClassifier implements IClassifier {
                 .get();
     }
 
-    private double countDistance(Object object, Object target, int noFeatures) {
-        return pow(object.getFeature().get(noFeatures) - target.getFeature().get(noFeatures), 2);
+    private double countDistance(float object, float target) {
+        return pow(object - target, 2);
     }
 
 }
