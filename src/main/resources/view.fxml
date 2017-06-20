@@ -146,7 +146,7 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <TextArea fx:id="textArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                    <TextArea fx:id="selectorTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -196,6 +196,11 @@
                                                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                          </VBox.margin>
                                                       </Text>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Improvement:" textAlignment="RIGHT">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Text>
                                                    </children>
                                                 </VBox>
                                                 <VBox alignment="TOP_RIGHT" prefWidth="140.0">
@@ -222,6 +227,18 @@
                                                                   <String fx:value="1" />
                                                               </FXCollections>
                                                           </items>
+                                                      </ChoiceBox>
+                                                      <ChoiceBox fx:id="improvementChoiceBox" maxWidth="120.0" minWidth="100.0" prefWidth="120.0" value="None">
+                                                         <items>
+                                                            <FXCollections fx:factory="observableArrayList">
+                                                               <String fx:value="None" />
+                                                               <String fx:value="Cross-validation" />
+                                                               <String fx:value="Bootstrap" />
+                                                            </FXCollections>
+                                                         </items>
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                                         </VBox.margin>
                                                       </ChoiceBox>
                                                    </children>
                                                 </VBox>
@@ -257,7 +274,7 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <TextArea fx:id="textArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                    <TextArea fx:id="classifierTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>

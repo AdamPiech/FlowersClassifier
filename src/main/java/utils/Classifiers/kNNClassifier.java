@@ -1,4 +1,4 @@
-package utils.Classifiers;
+package utils.classifiers;
 
 import engine.Object;
 

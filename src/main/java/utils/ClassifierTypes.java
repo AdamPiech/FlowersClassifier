@@ -1,6 +1,6 @@
 package utils;
 
-import utils.Classifiers.*;
+import utils.classifiers.*;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -6,8 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Random;
-
 /**
  * Created by Adam Piech on 2017-03-22.
  */

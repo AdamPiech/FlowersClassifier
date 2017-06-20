@@ -7,18 +7,17 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import utils.ClassifierTypes;
-import utils.Classifiers.IClassifier;
-import utils.Classifiers.kNMClassifier;
-import utils.Classifiers.kNNClassifier;
-import utils.Fisher;
+import utils.SelectorTypes;
+import utils.classifiers.IClassifier;
+import utils.classifiers.kNMClassifier;
+import utils.classifiers.kNNClassifier;
 import utils.NoSampleTypes;
 import utils.Training;
+import utils.featuresExtractors.IFeaturesSelector;
 
 import java.io.File;
 import java.net.URL;
@@ -38,10 +37,12 @@ public class MainController implements Initializable {
 
     @FXML private AnchorPane anchorPane;
     @FXML private TextField trainingPartTextField;
-    @FXML private TextArea textArea;
+    @FXML private TextArea classifierTextArea;
+    @FXML private TextArea selectorTextArea;
     @FXML private ChoiceBox classifierChoiceBox;
     @FXML private ChoiceBox noSamplesChoiceBox;
     @FXML private ChoiceBox noFeaturesChoiceBox;
+    @FXML private ToggleGroup toggleGroup;
 
     private FileDataBase fileDataBase;
     private List<Object> trainingObjects;
@@ -63,11 +64,18 @@ public class MainController implements Initializable {
 
     @FXML
     private void trainEvent() {
-        //(Fisher) Za każdym razem trzeba ładować na nowo z pliku - poprawić!!!
         fileDataBase.load(filePath);
-        Fisher fisher = new Fisher(fileDataBase.getObjects(), Integer.parseInt(noFeaturesChoiceBox.getValue().toString()));
-        fisher.execute();
 
+        SelectorTypes selectorTypes = new SelectorTypes();
+        String selector = ((RadioButton) toggleGroup.getSelectedToggle()).getText();
+        IFeaturesSelector featuresSelector = selectorTypes.getSelector(selector);
+
+        List<Integer> result = featuresSelector.select(fileDataBase.getObjects(), Integer.parseInt(noFeaturesChoiceBox.getValue().toString()));
+        showResultOfSelection(result, selector);
+        train();
+    }
+
+    private void train() {
         int trainingPart = (int) Double.parseDouble(trainingPartTextField.getText());
         Training training = new Training(fileDataBase);
         training.train(trainingPart);
@@ -125,9 +133,18 @@ public class MainController implements Initializable {
         return fileChooser;
     }
 
+    private void showResultOfSelection(List<Integer> bestFeatures, String instanceName) {
+        String result = "";
+        for (Integer feature : bestFeatures) {
+            result = result + feature + ", ";
+        }
+        selectorTextArea.setText(selectorTextArea.getText() + instanceName + ":\n"
+                + "Jako najlepsze cechy wybrano: " + result + "\n\n");
+    }
+
     private void showResultOfClassification(String instanceName, double percentOfProperlyClassified, double percentOfMisclassified) {
         DecimalFormat df = new DecimalFormat("#.00");
-        textArea.setText(textArea.getText() + instanceName + ".\n"
+        classifierTextArea.setText(classifierTextArea.getText() + instanceName + ".\n"
                 + "Poprawnie sklasyfikowano " + df.format(percentOfProperlyClassified) + "% obiektów.\n"
                 + "Błędnie sklasyfikowano " + df.format(percentOfMisclassified) + "% obiektów.\n\n");
     }
