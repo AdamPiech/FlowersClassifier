@@ -1,5 +1,7 @@
 package view;
 
+import dataProcessing.classifiersImprovement.Bootstrap;
+import dataProcessing.classifiersImprovement.CrossValidation;
 import engine.FileDataBase;
 import engine.Object;
 import javafx.beans.value.ChangeListener;
@@ -27,7 +29,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static dataProcessing.utils.Constants.RESOURCE_DIRECTORY;
+import static dataProcessing.utils.Constants.*;
 
 /**
  * Created by Adam Piech on 2017-03-22.
@@ -40,6 +42,7 @@ public class MainController implements Initializable {
     @FXML private TextArea classifierTextArea;
     @FXML private TextArea selectorTextArea;
     @FXML private ChoiceBox classifierChoiceBox;
+    @FXML private ChoiceBox improvementChoiceBox;
     @FXML private ChoiceBox noSamplesChoiceBox;
     @FXML private ChoiceBox noFeaturesChoiceBox;
     @FXML private ToggleGroup toggleGroup;
@@ -85,10 +88,34 @@ public class MainController implements Initializable {
 
     @FXML
     private void executeEvent() {
+
         ClassifierTypes classifierTypes = new ClassifierTypes();
         IClassifier classifier = setClassifierProperties(classifierTypes.getClassifier((String) classifierChoiceBox.getValue()));
-        double percentOfProperlyClassified = classifier.execute(trainingObjects, testingObjects) * 100.0;
-        double percentOfMisclassified = 100.0 - percentOfProperlyClassified;
+
+        double percentOfProperlyClassified;
+        double percentOfMisclassified;
+
+        switch (improvementChoiceBox.getValue().toString()) {
+            case CROSS_VALIDATION : {
+                CrossValidation crossValidation = new CrossValidation(fileDataBase);
+                percentOfProperlyClassified = crossValidation.execute(
+                        (train, test) -> classifier.execute(train, test)) * 100.0;
+                break;
+            }
+            case BOOTSTRAP : {
+                Bootstrap bootstrap = new Bootstrap(fileDataBase);
+                percentOfProperlyClassified = bootstrap.execute(
+                        (train, test) -> classifier.execute(train, test),
+                        (int) Double.parseDouble(trainingPartTextField.getText())) * 100.0;
+                break;
+            }
+            default : {
+                percentOfProperlyClassified = classifier.execute(trainingObjects, testingObjects) * 100.0;
+                break;
+            }
+        }
+
+        percentOfMisclassified = 100.0 - percentOfProperlyClassified;
         showResultOfClassification(classifierChoiceBox.getValue() + ":   k = " + noSamplesChoiceBox.getValue(),
                 percentOfProperlyClassified, percentOfMisclassified);
     }
