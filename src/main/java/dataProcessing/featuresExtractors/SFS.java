@@ -1,4 +1,4 @@
-package utils.featuresExtractors;
+package dataProcessing.featuresExtractors;
 
 import com.xiantrimble.combinatorics.Combinatoric;
 import com.xiantrimble.combinatorics.CombinatoricFactory;
@@ -11,14 +11,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.lang.Math.*;
-import static java.util.stream.Collectors.*;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
- * Created by Adam Piech on 2017-05-15.
+ * Created by Adam Piech on 2017-06-21.
  */
-
-public class Fisher implements IFeaturesSelector {
+public class SFS implements IFeaturesSelector {
 
     private List<Object> objectsSet;
     private int requiredFeaturesQuantity;
@@ -32,7 +32,7 @@ public class Fisher implements IFeaturesSelector {
         Map<String, Matrix> classesMatrices = prepareClassesMatrices(classesLists);
 
         Map<String, Matrix> covarianceMatrices = new HashMap<>();
-        Map<String, List<Float>> means = new HashMap<>();
+        Map<String, List<Double>> means = new HashMap<>();
 
         for (String key : classesMatrices.keySet()) {
             means.put(key, calculateMeans(classesLists.get(key)));
@@ -40,7 +40,7 @@ public class Fisher implements IFeaturesSelector {
                     calculateCovarianceMatrix(subtractMeansFromClass(classesMatrices.get(key), means.get(key))));
         }
 
-        List<Integer> bestFeatures = calculateFisherForAllCombinations(covarianceMatrices, means);
+        List<Integer> bestFeatures = calculateSFS(covarianceMatrices, means);
         createNewFeatureSet(bestFeatures);
 
         return bestFeatures;
@@ -75,51 +75,64 @@ public class Fisher implements IFeaturesSelector {
         return classFeatures;
     }
 
-    private List<Integer> calculateFisherForAllCombinations(Map<String, Matrix> covarianceMatrices, Map<String, List<Float>> means) {
+    private List<Integer> calculateSFS(Map<String, Matrix> covarianceMatrices, Map<String, List<Double>> means) {
 
-        Map<Double, Integer[]> fishers = new HashMap<>();
-        for (Integer[] combination : calculateCombinationsOfFeatures(objectsSet.get(0).getFeaturesNumber(), requiredFeaturesQuantity)) {
+        Set<Integer> allFeatures = getIntegerRangeList(objectsSet.get(0).getFeaturesNumber());
+        List<Integer> selectedFeatures = new ArrayList<>();
+        for (int noFeatures = 1; noFeatures <= requiredFeaturesQuantity; noFeatures++) {
 
-            Matrix[] setOfMatrix = new Matrix[covarianceMatrices.keySet().size()];
-            List<Float>[] setOfFeatures = new List[means.keySet().size()];
-            int count = 0;
-            for (String key : covarianceMatrices.keySet()) {
-
-                Matrix matrix = new Basic2DMatrix(combination.length, combination.length);
-                List<Float> features = new ArrayList<>(combination.length);
-                for (int rowIndex = 0; rowIndex < combination.length; rowIndex++) {
-                    features.add(means.get(key).get(combination[rowIndex]));
-                    for (int colIndex = 0; colIndex < combination.length; colIndex++) {
-                        matrix.set(rowIndex, colIndex, covarianceMatrices.get(key).get(combination[rowIndex], combination[colIndex]));
-                    }
-                }
-
-                setOfMatrix[count] = matrix;
-                setOfFeatures[count] = features;
-                count++;
+            Map<Double, List<Integer>> fishers = new HashMap<>();
+            for (Integer proposedFeatures : allFeatures) {
+                List<Integer> currentFeatures = new ArrayList<>(selectedFeatures);
+                currentFeatures.add(proposedFeatures);
+                fishers.put(prepareDataAndCalculateFisher(covarianceMatrices, means, currentFeatures), currentFeatures);
             }
 
-            fishers.put(calculateFisher(setOfMatrix, setOfFeatures), combination);
+            selectedFeatures = selectBestFeaturesSet(fishers);
+            allFeatures.removeAll(selectedFeatures);
         }
 
-        return selectBestFeaturesSet(fishers);
+        return selectedFeatures;
     }
 
-    private double calculateFisher(Matrix[] setOfMatrix, List<Float>[] setOfFeatures) {
+    private double prepareDataAndCalculateFisher(Map<String, Matrix> covarianceMatrices, Map<String, List<Double>> means, List<Integer> currentFeatures) {
+
+        Matrix[] setOfMatrix = new Matrix[covarianceMatrices.keySet().size()];
+        List<Double>[] setOfMeans = new List[means.keySet().size()];
+        int count = 0;
+        for (String key : covarianceMatrices.keySet()) {
+
+            Matrix matrix = new Basic2DMatrix(currentFeatures.size(), currentFeatures.size());
+            List<Double> mean = new ArrayList<>(currentFeatures.size());
+            for (int rowIndex = 0; rowIndex < currentFeatures.size(); rowIndex++) {
+                mean.add(means.get(key).get(currentFeatures.get(rowIndex)));
+                for (int colIndex = 0; colIndex < currentFeatures.size(); colIndex++) {
+                    matrix.set(rowIndex, colIndex, covarianceMatrices.get(key).get(currentFeatures.get(rowIndex), currentFeatures.get(colIndex)));
+                }
+            }
+
+            setOfMatrix[count] = matrix;
+            setOfMeans[count] = mean;
+            count++;
+        }
+
+        return calculateFisher(setOfMatrix, setOfMeans);
+    }
+
+    private double calculateFisher(Matrix[] setOfMatrix, List<Double>[] setOfFeatures) {
         double distance = calculateDistances(setOfFeatures);
         double sumOfDet = setOfMatrix[0].determinant() + setOfMatrix[1].determinant();
+//        double sumOfDet = setOfMatrix[0].add(setOfMatrix[1]).determinant();
         return distance / sumOfDet;
     }
 
-    private List<Integer> selectBestFeaturesSet(Map<Double, Integer[]> fishers) {
-        return Arrays
-                .stream(fishers
-                    .entrySet()
-                    .stream()
-                    .max((e1, e2) -> e1.getKey() > e2.getKey() ? 1 : -1)
-                    .get()
-                    .getValue())
-                .collect(Collectors.toList());
+    private List<Integer> selectBestFeaturesSet(Map<Double, List<Integer>> fishers) {
+        return fishers
+                .entrySet()
+                .stream()
+                .max((e1, e2) -> e1.getKey() > e2.getKey() ? 1 : -1)
+                .get()
+                .getValue();
     }
 
     private void createNewFeatureSet(List<Integer> bestFeatures) {
@@ -132,23 +145,23 @@ public class Fisher implements IFeaturesSelector {
         }
     }
 
-    private List<Float> calculateMeans(List<Object> singleClass) {
+    private List<Double> calculateMeans(List<Object> singleClass) {
 
-        List<Float> means = new ArrayList<>();
+        List<Double> means = new ArrayList<>();
         int noFeature = singleClass.get(0).getFeaturesNumber();
 
         for (int index = 0; index < noFeature; index++) {
-            float sum = (float) 0;
+            double sum = 0.0;
             for (Object object : singleClass) {
                 sum += object.getFeatures().get(index);
             }
-            means.add(sum / (float) noFeature);
+            means.add(sum / (double) noFeature);
         }
 
         return means;
     }
 
-    private Matrix subtractMeansFromClass(Matrix singleClass, List<Float> means) {
+    private Matrix subtractMeansFromClass(Matrix singleClass, List<Double> means) {
 
         int rows = singleClass.rows();
         int cols = singleClass.columns();
@@ -171,29 +184,36 @@ public class Fisher implements IFeaturesSelector {
     }
 
     private Combinatoric<Integer> calculateCombinationsOfFeatures(int featuresQuantity, int requiredFeaturesQuantity) {
-        Integer[] allFeature = getIntegerRange(featuresQuantity);
+        Integer[] allFeature = getIntegerRangeArray(featuresQuantity);
         CombinatoricFactory factory = new CombinatoricFactoryImpl();
         return factory.createCombinations(requiredFeaturesQuantity, allFeature);
     }
 
-    private Integer[] getIntegerRange(int featuresQuantity) {
+    private Integer[] getIntegerRangeArray(int featuresQuantity) {
         return IntStream
                 .rangeClosed(0, featuresQuantity - 1)
                 .boxed()
-                .toArray(Integer[]::new);
+                .toArray(Integer[] :: new);
     }
 
-    private double calculateDistances(List<Float>[] setOfFeatures) {
+    private Set<Integer> getIntegerRangeList(int featuresQuantity) {
+        return IntStream
+                .rangeClosed(0, featuresQuantity - 1)
+                .boxed()
+                .collect(Collectors.toSet());
+    }
+
+    private double calculateDistances(List<Double>[] setOfFeatures) {
         double sum = 0.0;
         for (int index = 0; index < setOfFeatures[0].size(); index++) {
             sum += calculateDistances(setOfFeatures[0].get(index), setOfFeatures[1].get(index));
         }
-        return sqrt(sum); // <- czy jednak nie dzielić? wyniki inne
+        return sqrt(sum);
 //        return sum / (double) setOfFeatures[0].size();
     }
 
-    private double calculateDistances(float f1, float f2) {
-        return pow(f1 - f2, 2);
+    private double calculateDistances(double d1, double d2) {
+        return pow(d1 - d2, 2);
     }
 
 }

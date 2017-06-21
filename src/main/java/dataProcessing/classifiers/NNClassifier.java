@@ -1,18 +1,18 @@
-package utils.classifiers;
+package dataProcessing.classifiers;
 
 import engine.Object;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-import static java.util.stream.Collectors.groupingBy;
+import static java.lang.Math.*;
 
 /**
- * Created by Adam Piech on 2017-04-17.
+ * Created by Adam Piech on 2017-04-05.
  */
 
-public class NMClassifier implements IClassifier {
+public class NNClassifier implements IClassifier {
 
     @Override
     public double execute(List<Object> trainingSet, List<Object> testingSet) {
@@ -21,7 +21,7 @@ public class NMClassifier implements IClassifier {
         int misclassified = 0;
 
         for (Object testingObject : testingSet) {
-            if (classify(countClassesMeans(trainingSet), testingObject).equals(testingObject.getClassName())) {
+            if (classify(trainingSet, testingObject).equals(testingObject.getClassName())) {
                 properlyClassified++;
             } else {
                 misclassified++;
@@ -29,35 +29,6 @@ public class NMClassifier implements IClassifier {
         }
 
         return ((double) properlyClassified) / ((double) (properlyClassified + misclassified));
-    }
-
-    private List<Object> countClassesMeans(List<Object> trainingSet) {
-        Map<String, List<Object>> classes = trainingSet
-                .stream()
-                .collect(groupingBy(Object::getClassName));
-
-        List<Object> classesMeans = new ArrayList<>();
-        for (String key : classes.keySet()) {
-            List<Float> featuresMeans = countNewFeatures(classes.get(key));
-            classesMeans.add(new Object(key, featuresMeans));
-        }
-        return classesMeans;
-    }
-
-    private List<Float> countNewFeatures(List<Object> objects) {
-        List<Float> featuresMeans = new ArrayList<>();
-        for (int featureIndex = 0; featureIndex < objects.get(0).getFeaturesNumber(); featureIndex++) {
-            featuresMeans.add(countFeatureMean(objects, featureIndex));
-        }
-        return featuresMeans;
-    }
-
-    private float countFeatureMean(List<Object> objects, int featureIndex) {
-        float feature = 0;
-        for (Object object : objects) {
-            feature += object.getFeatures().get(featureIndex);
-        }
-        return feature / (float) objects.size();
     }
 
     private String classify(List<Object> trainingSet, Object testingObject) {

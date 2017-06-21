@@ -1,4 +1,4 @@
-package utils;
+package dataProcessing.utils;
 
 import javafx.collections.ObservableList;
 

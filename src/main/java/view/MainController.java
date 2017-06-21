@@ -10,14 +10,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import utils.ClassifierTypes;
-import utils.SelectorTypes;
-import utils.classifiers.IClassifier;
-import utils.classifiers.kNMClassifier;
-import utils.classifiers.kNNClassifier;
-import utils.NoSampleTypes;
-import utils.Training;
-import utils.featuresExtractors.IFeaturesSelector;
+import dataProcessing.utils.ClassifierTypes;
+import dataProcessing.utils.SelectorTypes;
+import dataProcessing.classifiers.IClassifier;
+import dataProcessing.classifiers.kNMClassifier;
+import dataProcessing.classifiers.kNNClassifier;
+import dataProcessing.utils.NoSampleTypes;
+import dataProcessing.Training;
+import dataProcessing.featuresExtractors.IFeaturesSelector;
 
 import java.io.File;
 import java.net.URL;
@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static utils.Constants.RESOURCE_DIRECTORY;
+import static dataProcessing.utils.Constants.RESOURCE_DIRECTORY;
 
 /**
  * Created by Adam Piech on 2017-03-22.

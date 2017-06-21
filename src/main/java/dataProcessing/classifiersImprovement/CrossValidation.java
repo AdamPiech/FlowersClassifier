@@ -1,4 +1,4 @@
-package utils.classifiersImprovement;
+package dataProcessing.classifiersImprovement;
 
 /**
  * Created by Adam Piech on 2017-06-01.
