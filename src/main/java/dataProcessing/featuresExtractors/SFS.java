@@ -155,7 +155,7 @@ public class SFS implements IFeaturesSelector {
             for (Object object : singleClass) {
                 sum += object.getFeatures().get(index);
             }
-            means.add(sum / (double) noFeature);
+            means.add(sum / (double) singleClass.size());
         }
 
         return means;
